@@ -23,6 +23,15 @@ route '/stylesheet.css' do
   '/style.css'
 end
 
+route '/assets/third_party/**/*' do
+  # Strip out '/third_party', version numbers, and '.min' from filenames.
+  *folders, basename = item.identifier.to_s.split('/')
+  filename, *__ignore, extension = basename.split('.')
+  filename, *__ignore = filename.split('-')  # Kill version number stubs.
+  folders -= ['third_party']
+  (folders + ['%{base}.%{ext}' % {base: filename, ext: extension}]).join('/')
+end
+
 route '/**/*.{html,md}' do
   if item.identifier =~ '/index.*'
     '/index.html'
