@@ -14,7 +14,6 @@ compile '/**/*.html' do
 end
 
 compile '/**/*' do
-  write item.identifier.to_s
 end
 
 ################################################################################
@@ -30,6 +29,10 @@ route '/**/*.{html,md}' do
   else
     item.identifier.without_ext + '/index.html'
   end
+end
+
+route '/**/*' do
+  item.identifier.to_s
 end
 
 ################################################################################
