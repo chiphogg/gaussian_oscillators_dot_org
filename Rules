@@ -3,6 +3,9 @@
 ################################################################################
 # Compile rules.
 
+compile '/CNAME' do
+end
+
 compile '/assets/**/*' do
 end
 
