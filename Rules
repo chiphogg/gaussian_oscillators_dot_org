@@ -17,6 +17,12 @@ compile '/**/*.html' do
 end
 
 compile '/**/*' do
+  if item.binary?
+    # Do not filter or process binary items.
+  else
+    filter :pandoc, args: ['mathjax']
+    layout '/default.*'
+  end
 end
 
 ################################################################################
@@ -35,7 +41,7 @@ route '/assets/third_party/**/*' do
   (folders + ['%{base}.%{ext}' % {base: filename, ext: extension}]).join('/')
 end
 
-route '/**/*.{html,md}' do
+route '/**/*.{html,md,pandoc}' do
   item.identifier.without_ext + '.html'
 end
 
