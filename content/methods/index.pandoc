@@ -52,7 +52,7 @@ However, it can be extended for longer time periods and take more complicated pa
 <div id='chart_loop'></div>
 
 The downside is that it still eventually repeats.
-Moreover, the resource requirements are *quadratic* in the length of the animation ($$O(t^2)$$)!
+Moreover, the resource requirements are *quadratic* in the length of the animation ($O(t^2)$)!
 This creates an unfortunate tension: we want longer animations (because they show more of the distribution), but the resource requirements quickly become unmanageable.
 
 ## Compact support covariance oscillators
@@ -60,7 +60,7 @@ This creates an unfortunate tension: we want longer animations (because they sho
 The method of *compact support covariance* combines the advantages of the above techniques, without the drawbacks.
 In this method, each frame is correlated only with other frames within a certain time window, $\Delta t$.
 This correlation function is smooth everywhere; therefore, so is the motion.
-Furthermore, although no frames are treated specially in any way (as with great circles and delocalized oscillators), we can continue to generate new frames with constant resource requirements ($$O(1)$$ with respect to $$t$$, as with interpolation).
+Furthermore, although no frames are treated specially in any way (as with great circles and delocalized oscillators), we can continue to generate new frames with constant resource requirements ($O(1)$ with respect to $t$, as with interpolation).
 
 <div id='chart_CS'></div>
 
