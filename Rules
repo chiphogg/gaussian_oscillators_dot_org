@@ -42,7 +42,7 @@ route '/assets/third_party/**/*' do
 end
 
 route '/**/*.{html,md,pandoc}' do
-  item.identifier.without_ext + '.html'
+  index_name(item.identifier.without_ext.to_s)
 end
 
 route '/**/*' do

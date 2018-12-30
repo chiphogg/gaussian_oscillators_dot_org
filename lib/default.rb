@@ -36,3 +36,9 @@ def extra_asset_links
   lines.join("\n")
 end
 
+
+# Remove 
+def index_name(id)
+  id_without_index = (id.split('/') - ['index']).join('/')
+  return id_without_index + '/index.html'
+end
