@@ -90,7 +90,6 @@ Happy viewing!
 // Load the Visualization API.
 google.load('visualization', '1.0', {'packages':['corechart']});
 // Set a callback to run when the Google Visualization API is loaded.
-var myChart = null;
 google.setOnLoadCallback(loaded);
 
 // Global variables I might find useful.
