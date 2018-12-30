@@ -24,6 +24,8 @@
         %ul
           %li
             = link_to_unless_current 'Methods', '/methods/', :title => 'Visually comparing different methods of animation.'
+          %li
+            = link_to_unless_current 'Examples', '/examples/', :title => 'Examples where animation can be useful.'
 
     %hr
 
@@ -31,4 +33,3 @@
       %h1
         = @item[:title]
       = yield
-

@@ -1,0 +1,9 @@
+How does noise affect the fit?
+Animations can help us explore this question.
+
+We can start with a known function, and add noise.
+Then we can fit the noisy data with a Gaussian Process model, and see how well our fit (with its uncertainty) covers the known true function.
+If we repeat this exercise many times, it conveys an idea of the reliability of the fit.
+
+Animations take this one step further, because they let us change the noise smoothly and continuously.
+We still see many possible versions of the data, but now we also see something new: we can watch the fit evolve in response to the evolution of the noise.

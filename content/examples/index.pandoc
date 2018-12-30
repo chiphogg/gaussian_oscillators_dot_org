@@ -1,0 +1,12 @@
+These examples show how to use Gaussian Oscillator based animations to convey uncertainty about curves or surfaces.
+
+[Noise](noise): watch a fit evolve together with evolving Gaussian noise.
+<div id='chart_noise'></div>
+
+<script type='text/javascript'>
+google.load('visualization', '1.0', {'packages':['corechart']});
+google.setOnLoadCallback(loaded);
+
+function loaded() {
+}
+</script>
