@@ -7,3 +7,56 @@ If we repeat this exercise many times, it conveys an idea of the reliability of 
 
 Animations take this one step further, because they let us change the noise smoothly and continuously.
 We still see many possible versions of the data, but now we also see something new: we can watch the fit evolve in response to the evolution of the noise.
+
+<div id='test_plotly' style='width:600px;height:400px;'></div>
+
+<script type='text/javascript'>
+Plotly.react(
+  'test_plotly',
+  [{
+    type: 'scatter',
+    x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    y: [0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5],
+    error_y: {
+      type: 'data',
+      array: [0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+    },
+  },{
+    type: 'scatter',
+    x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    y: [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6],
+    fill: 'tonexty',
+    mode: 'markers',
+  }],
+);
+
+Plotly.animate(
+  'test_plotly',
+  {
+    data: 
+    [{
+      type: 'scatter',
+      x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      y: [0, -1.2, -1.6, -1.2, -0, +1.2, +1.6, +1.2, -0, -1.2, -1.6, -1.2, -0, +1.2, +1.6, +1.2, -0, -1.2, -1.6, -1.2],
+      error_y: {
+        type: 'data',
+        array: [0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+      },
+    },{
+      type: 'scatter',
+      x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      y: [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6],
+      fill: 'tonexty',
+      mode: 'markers',
+    }],
+  }, {
+    transition: {
+      duration: 2000,
+      easing: 'linear',
+    },
+    frame: {
+      duration: 2000,
+      redraw: false,
+    },
+  });
+</script>

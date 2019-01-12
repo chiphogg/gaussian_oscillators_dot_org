@@ -6,4 +6,5 @@ js:
   - covariance
   - animation
   - jquery
+  - plotly
 ---
