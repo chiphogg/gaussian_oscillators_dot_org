@@ -11,33 +11,58 @@ We still see many possible versions of the data, but now we also see something n
 <div id='test_plotly' style='width:600px;height:400px;'></div>
 
 <script type='text/javascript'>
-data = {
-  x: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-  y: [0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5],
-  error_y: [0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
-  y1: [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6],
-};
+function createHardcodedTestDataset()
+{
+  var x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+  var y = [0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5];
+  var error_y = [0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+  var y1 = [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6];
 
-var traces = [
+  function advance()
   {
-    type: 'scatter',
-    x: data.x,
-    y: data.y,
-    error_y: {
-      type: 'data',
-      array: data.error_y,
-    },
-  },{
-    type: 'scatter',
-    x: data.x,
-    y: data.y1,
-    fill: 'tonexty',
-    mode: 'markers',
-  }];
+    for (var i = 0, i_stop = y.length; i < i_stop; ++i)
+    {
+      y[i] *= -0.8;
+      y1[i] *= 0.9;
+      y1[i] += 0.1;
+    }
+  }
 
-Plotly.react('test_plotly', traces);
+  return {
+    x: x,
+    y: y,
+    error_y: error_y,
+    y1: y1,
+    advance: advance,
+  };
+}
 
-function update(timestamp, next_timestamp, duration, times_left)
+function createHardcodedPlotSpecs(data)
+{
+  var traces = [
+    {
+      type: 'scatter',
+      x: data.x,
+      y: data.y,
+      error_y: {
+        type: 'data',
+        array: data.error_y,
+      },
+    },{
+      type: 'scatter',
+      x: data.x,
+      y: data.y1,
+      fill: 'tonexty',
+      mode: 'markers',
+    }];
+
+  return {
+    traces: traces,
+    advance_data: data.advance,
+  }; 
+}
+
+function update(specs, timestamp, next_timestamp, duration, times_left)
 {
   if (times_left <= 0)
   {
@@ -49,16 +74,11 @@ function update(timestamp, next_timestamp, duration, times_left)
     next_timestamp += duration;
     --times_left;
 
-    for (var i = 0, i_stop = data.x.length; i < i_stop; ++i)
-    {
-      data.y[i] *= -0.8;
-      data.y1[i] *= 0.9;
-      data.y1[i] += 0.1;
-    }
+    specs.advance_data();
 
     Plotly.animate(
       'test_plotly',
-      { data: traces, },
+      { data: specs.traces, },
       {
         transition: {
           duration: duration,
@@ -71,9 +91,12 @@ function update(timestamp, next_timestamp, duration, times_left)
       });
 
   }
-  requestAnimationFrame(timestamp => update(timestamp, next_timestamp, duration, times_left));
+  requestAnimationFrame(timestamp => update(specs, timestamp, next_timestamp, duration, times_left));
 }
 
-requestAnimationFrame(timestamp => update(timestamp, timestamp, 1000, 20));
+var data = createHardcodedTestDataset();
+var specs = createHardcodedPlotSpecs(data);
+Plotly.react('test_plotly', specs.traces);
+requestAnimationFrame(timestamp => update(specs, timestamp, timestamp, 1000, 20));
 
 </script>
