@@ -62,22 +62,34 @@ function createHardcodedPlotSpecs(data)
   }; 
 }
 
-function update(specs, timestamp, next_timestamp, duration, times_left)
-{
-  if (times_left <= 0)
+function createAnimatedPlot(plot, frame_duration) {
+  function update(timestamp, next_timestamp)
   {
-    return;
+    if (timestamp >= next_timestamp)
+    {
+      next_timestamp += frame_duration;
+      plot.animateToNextFrame(frame_duration);
+    }
+
+    if (!plot.finished())
+    {
+      requestAnimationFrame(timestamp => update(timestamp, next_timestamp));
+    }
   }
 
-  if (timestamp >= next_timestamp)
-  {
-    next_timestamp += duration;
-    --times_left;
+  requestAnimationFrame(timestamp => update(timestamp, timestamp));
 
+  return {};
+}
+
+function createPlotlyPlot(div_id, specs, times_left)
+{
+  function animateToNextFrame(duration)
+  {
     specs.advance_data();
 
     Plotly.animate(
-      'test_plotly',
+      div_id,
       { data: specs.traces, },
       {
         transition: {
@@ -89,14 +101,24 @@ function update(specs, timestamp, next_timestamp, duration, times_left)
           redraw: false,
         },
       });
-
   }
-  requestAnimationFrame(timestamp => update(specs, timestamp, next_timestamp, duration, times_left));
+
+  function finished()
+  {
+    return (times_left <= 0);
+  }
+
+  Plotly.react(div_id, specs.traces);
+
+  return {
+    animateToNextFrame: animateToNextFrame,
+    finished: finished,
+  };
 }
 
 var data = createHardcodedTestDataset();
 var specs = createHardcodedPlotSpecs(data);
-Plotly.react('test_plotly', specs.traces);
-requestAnimationFrame(timestamp => update(specs, timestamp, timestamp, 1000, 20));
+var plot = createPlotlyPlot('test_plotly', specs, 20);
+var animation = createAnimatedPlot(plot, 1000)
 
 </script>
