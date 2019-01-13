@@ -95,24 +95,26 @@ function createHardcodedPlotSpecs(dataset)
         type: 'data',
         array: dataset.data.error_y,
       },
+      line: { simplify: false, },
     },{
       type: 'scatter',
       x: dataset.data.x,
       y: dataset.data.y1,
       fill: 'tonexty',
       mode: 'markers',
+      line: { simplify: false, },
     },{
       type: 'scatter',
       x: dataset.data.x,
       y: dataset.data.ymin,
       showlegend: false,
-      line: { width: 0.5, color: 'gray', },
+      line: { width: 0.5, color: 'gray', simplify: false, },
     },{
       type: 'scatter',
       x: dataset.data.x,
       y: dataset.data.ymax,
       fill: 'tonexty',
-      line: { width: 0.5, color: 'gray', },
+      line: { width: 0.5, color: 'gray', simplify: false, },
     }];
 
   return {
