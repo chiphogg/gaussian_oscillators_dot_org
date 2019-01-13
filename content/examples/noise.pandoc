@@ -39,6 +39,51 @@ function createHardcodedTestDataset()
   };
 }
 
+function augment(dataset, augmentations)
+{
+  // Make a shallow copy of the references: we want to stay up to date on
+  // changes in the data, but we don't want to change the entries in the
+  // "parent" dataset.
+  var data = Object.assign({}, dataset.data)
+
+  function _shortest_length(keys)
+  {
+    return Math.min(...keys.map(k => data[k].length));
+  }
+
+  function _apply_augmentation(label, aug)
+  {
+    if (!data[label])
+    {
+      data[label] = [];
+    }
+
+    for (var i = 0, i_stop = _shortest_length(aug.vars); i < i_stop; ++i)
+    {
+      data[label][i] = aug.xform(aug.vars.map(k => data[k][i]))
+    }
+  }
+
+  function _update_derived_data()
+  {
+    Object.entries(augmentations).forEach(([label, aug]) => _apply_augmentation(label, aug));
+  }
+
+  function advance()
+  {
+    dataset.advance();
+
+    _update_derived_data()
+  }
+
+  _update_derived_data()
+
+  return {
+    data: data,
+    advance: advance,
+  };
+}
+
 function createHardcodedPlotSpecs(dataset)
 {
   var traces = [
@@ -137,7 +182,13 @@ function createPlotlyPlot(div_id, specs, times_left)
   };
 }
 
-var dataset = createHardcodedTestDataset();
+var dataset = augment(
+  createHardcodedTestDataset(),
+  {
+    ymin: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y - error_y},
+    ymax: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y + error_y},
+  });
+
 var specs = createHardcodedPlotSpecs(dataset);
 var plot = createPlotlyPlot('test_plotly', specs, 20);
 var animation = createAnimatedPlot(plot, 1000)
