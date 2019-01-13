@@ -63,7 +63,23 @@ function createHardcodedPlotSpecs(data)
 }
 
 function createAnimatedPlot(plot, frame_duration) {
-  function update(timestamp, next_timestamp)
+  var animation_id = undefined;
+
+  function stop()
+  {
+    if (!!animation_id)
+    {
+      cancelAnimationFrame(animation_id)
+      animation_id = undefined;
+    }
+  }
+
+  function start()
+  {
+    animation_id = requestAnimationFrame(timestamp => _update(timestamp, timestamp));
+  }
+
+  function _update(timestamp, next_timestamp)
   {
     if (timestamp >= next_timestamp)
     {
@@ -73,13 +89,16 @@ function createAnimatedPlot(plot, frame_duration) {
 
     if (!plot.finished())
     {
-      requestAnimationFrame(timestamp => update(timestamp, next_timestamp));
+      animation_id = requestAnimationFrame(timestamp => _update(timestamp, next_timestamp));
     }
   }
 
-  requestAnimationFrame(timestamp => update(timestamp, timestamp));
+  start();
 
-  return {};
+  return {
+    start: start,
+    stop: stop,
+  };
 }
 
 function createPlotlyPlot(div_id, specs, times_left)
