@@ -101,6 +101,18 @@ function createHardcodedPlotSpecs(dataset)
       y: dataset.data.y1,
       fill: 'tonexty',
       mode: 'markers',
+    },{
+      type: 'scatter',
+      x: dataset.data.x,
+      y: dataset.data.ymin,
+      showlegend: false,
+      line: { width: 0.5, color: 'gray', },
+    },{
+      type: 'scatter',
+      x: dataset.data.x,
+      y: dataset.data.ymax,
+      fill: 'tonexty',
+      line: { width: 0.5, color: 'gray', },
     }];
 
   return {
