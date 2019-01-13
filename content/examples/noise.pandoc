@@ -119,7 +119,7 @@ function createPlotlyPlot(div_id, specs, times_left)
         },
         frame: {
           duration: duration,
-          redraw: false,
+          redraw: finished(),
         },
       });
   }
