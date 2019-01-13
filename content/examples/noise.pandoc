@@ -18,9 +18,8 @@ data = {
   y1: [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6],
 };
 
-Plotly.react(
-  'test_plotly',
-  [{
+var traces = [
+  {
     type: 'scatter',
     x: data.x,
     y: data.y,
@@ -34,8 +33,9 @@ Plotly.react(
     y: data.y1,
     fill: 'tonexty',
     mode: 'markers',
-  }],
-);
+  }];
+
+Plotly.react('test_plotly', traces);
 
 function update(timestamp, next_timestamp, duration, times_left)
 {
@@ -58,24 +58,8 @@ function update(timestamp, next_timestamp, duration, times_left)
 
     Plotly.animate(
       'test_plotly',
+      { data: traces, },
       {
-        data: 
-        [{
-          type: 'scatter',
-          x: data.x,
-          y: data.y,
-          error_y: {
-            type: 'data',
-            array: data.error_y,
-          },
-        },{
-          type: 'scatter',
-          x: data.x,
-          y: data.y1,
-          fill: 'tonexty',
-          mode: 'markers',
-        }],
-      }, {
         transition: {
           duration: duration,
           easing: 'linear',
