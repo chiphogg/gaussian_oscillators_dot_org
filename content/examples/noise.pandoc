@@ -196,12 +196,27 @@ function createPlotlyRibbonTraces(trace, dataset)
   }, d));
 }
 
+// Convert line specs into plotly format.
+//
+// Aesthetics: x, ymin, ymax.
+function createPlotlyLineTrace(trace, dataset)
+{
+  return {
+    type: 'scatter',
+    x: dataset.data[getAes(trace, 'x')],
+    y: dataset.data[getAes(trace, 'y')],
+    line: { simplify: false, },
+  };
+}
+
 function getPlotlyTraceConverter(type)
 {
   switch (type)
   {
     case 'ribbon':
       return createPlotlyRibbonTraces;
+    case 'line':
+      return createPlotlyLineTrace;
     default:
       alert(`Type "${type}" not yet supported for plotly!`);
   };
@@ -259,10 +274,8 @@ var dataset = augment(
 var specs = {
   data: dataset,
   traces: [
-    {
-      type: 'ribbon',
-      fill: 'green',
-    },
+    { type: 'line', aes: { y: 'error_y', } },
+    { type: 'ribbon', },
   ],
 };
 
