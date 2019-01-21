@@ -203,7 +203,7 @@ function getPlotlyTraceConverter(type)
     case 'ribbon':
       return createPlotlyRibbonTraces;
     default:
-      alert('Type "${type}" not yet supported for plotly!');
+      alert(`Type "${type}" not yet supported for plotly!`);
   };
 }
 
