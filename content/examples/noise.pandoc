@@ -123,6 +123,9 @@ function createHardcodedPlotSpecs(dataset)
   }; 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Animation code
+
 function createAnimatedPlot(plot, frame_duration) {
   var animation_id = undefined;
 
@@ -159,6 +162,9 @@ function createAnimatedPlot(plot, frame_duration) {
   };
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Plotly-specific code
+
 function createPlotlyPlot(div_id, specs)
 {
   function animateToNextFrame(duration)
@@ -186,6 +192,9 @@ function createPlotlyPlot(div_id, specs)
     animateToNextFrame: animateToNextFrame,
   };
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Defining the figure
 
 var dataset = augment(
   createHardcodedTestDataset(),
