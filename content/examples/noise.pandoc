@@ -148,10 +148,7 @@ function createAnimatedPlot(plot, frame_duration) {
       plot.animateToNextFrame(frame_duration);
     }
 
-    if (!plot.finished())
-    {
-      animation_id = requestAnimationFrame(timestamp => _update(timestamp, next_timestamp));
-    }
+    animation_id = requestAnimationFrame(timestamp => _update(timestamp, next_timestamp));
   }
 
   start();
@@ -162,7 +159,7 @@ function createAnimatedPlot(plot, frame_duration) {
   };
 }
 
-function createPlotlyPlot(div_id, specs, times_left)
+function createPlotlyPlot(div_id, specs)
 {
   function animateToNextFrame(duration)
   {
@@ -178,21 +175,15 @@ function createPlotlyPlot(div_id, specs, times_left)
         },
         frame: {
           duration: duration,
-          redraw: finished(),
+          redraw: false,
         },
       });
-  }
-
-  function finished()
-  {
-    return (times_left <= 0);
   }
 
   Plotly.react(div_id, specs.traces);
 
   return {
     animateToNextFrame: animateToNextFrame,
-    finished: finished,
   };
 }
 
@@ -204,7 +195,7 @@ var dataset = augment(
   });
 
 var specs = createHardcodedPlotSpecs(dataset);
-var plot = createPlotlyPlot('test_plotly', specs, 20);
+var plot = createPlotlyPlot('test_plotly', specs);
 var animation = createAnimatedPlot(plot, 1000)
 
 </script>
