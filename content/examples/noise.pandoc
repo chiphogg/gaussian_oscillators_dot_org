@@ -181,21 +181,19 @@ function createPlotlyRibbonTraces(trace, dataset)
 {
   return [
     {
-      type: 'scatter',
-      x: dataset.data[getAes(trace, 'x')],
       y: dataset.data[getAes(trace, 'ymin')],
       showlegend: false,
-      line: { width: 0, simplify: false, },
     },
     {
-      type: 'scatter',
-      x: dataset.data[getAes(trace, 'x')],
       y: dataset.data[getAes(trace, 'ymax')],
       fill: 'tonexty',
       fillcolor: trace.fill,
-      line: { width: 0, simplify: false, },
     },
-  ];
+  ].map(d => Object.assign({
+    type: 'scatter',
+    x: dataset.data[getAes(trace, 'x')],
+    line: { width: 0, simplify: false, },
+  }, d));
 }
 
 function getPlotlyTraceConverter(type)
