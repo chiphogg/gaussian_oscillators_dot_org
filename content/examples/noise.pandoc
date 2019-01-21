@@ -209,6 +209,14 @@ function createPlotlyLineTrace(trace, dataset)
   };
 }
 
+// Convert point specs into plotly format.
+//
+// Aesthetics: x, ymin, ymax.
+function createPlotlyPointTrace(trace, dataset)
+{
+  return Object.assign(createPlotlyLineTrace(trace, dataset), { mode: 'markers', });
+}
+
 function getPlotlyTraceConverter(type)
 {
   switch (type)
@@ -217,6 +225,8 @@ function getPlotlyTraceConverter(type)
       return createPlotlyRibbonTraces;
     case 'line':
       return createPlotlyLineTrace;
+    case 'point':
+      return createPlotlyPointTrace;
     default:
       alert(`Type "${type}" not yet supported for plotly!`);
   };
@@ -276,6 +286,7 @@ var specs = {
   traces: [
     { type: 'line', aes: { y: 'error_y', } },
     { type: 'ribbon', },
+    { type: 'point', aes: { y: 'ymin', } },
   ],
 };
 
