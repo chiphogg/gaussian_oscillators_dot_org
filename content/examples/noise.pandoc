@@ -8,7 +8,7 @@ If we repeat this exercise many times, it conveys an idea of the reliability of 
 Animations take this one step further, because they let us change the noise smoothly and continuously.
 We still see many possible versions of the data, but now we also see something new: we can watch the fit evolve in response to the evolution of the noise.
 
-<div id='test_plotly' style='width:600px;height:400px;'></div>
+<div id='test_plotly' style='width:640px;height:480px;'></div>
 
 <script type='text/javascript'>
 function createHardcodedTestDataset()
