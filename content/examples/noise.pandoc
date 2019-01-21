@@ -163,17 +163,72 @@ function createAnimatedPlot(plot, frame_duration) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Generic plotting functions
+
+// Get the aesthetic mapping from the trace, defaulting to the label itself.
+function getAes(trace, label)
+{
+  return (trace['aes'] && trace['aes'][label]) || label;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Plotly-specific code
+
+// Convert ribbon specs into plotly format.
+//
+// Aesthetics: x, ymin, ymax.
+function createPlotlyRibbonTraces(trace, dataset)
+{
+  return [
+    {
+      type: 'scatter',
+      x: dataset.data[getAes(trace, 'x')],
+      y: dataset.data[getAes(trace, 'ymin')],
+      showlegend: false,
+      line: { width: 0, simplify: false, },
+    },
+    {
+      type: 'scatter',
+      x: dataset.data[getAes(trace, 'x')],
+      y: dataset.data[getAes(trace, 'ymax')],
+      fill: 'tonexty',
+      fillcolor: trace.fill,
+      line: { width: 0, simplify: false, },
+    },
+  ];
+}
+
+function getPlotlyTraceConverter(type)
+{
+  switch (type)
+  {
+    case 'ribbon':
+      return createPlotlyRibbonTraces;
+    default:
+      alert('Type "${type}" not yet supported for plotly!');
+  };
+}
+
+function createPlotlyTraces(specs)
+{
+  plotly_specs = specs.traces.map(t => getPlotlyTraceConverter(t.type)(t, specs.data));
+
+  // Some plotly specs need multiple plotly traces to work (e.g., ribbon plots).
+  // So, we flatten the result, in case any elements are actually arrays.
+  return plotly_specs.reduce((result, val) => result.concat(val), []);;
+}
 
 function createPlotlyPlot(div_id, specs)
 {
+  var traces = createPlotlyTraces(specs);
+
   function animateToNextFrame(duration)
   {
-    specs.advance_data();
+    specs.data.advance();
 
     Plotly.animate(
       div_id,
-      { data: specs.traces, },
+      { data: traces, },
       {
         transition: {
           duration: duration,
@@ -186,7 +241,7 @@ function createPlotlyPlot(div_id, specs)
       });
   }
 
-  Plotly.react(div_id, specs.traces);
+  Plotly.react(div_id, traces);
 
   return {
     animateToNextFrame: animateToNextFrame,
@@ -203,7 +258,16 @@ var dataset = augment(
     ymax: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y + error_y},
   });
 
-var specs = createHardcodedPlotSpecs(dataset);
+var specs = {
+  data: dataset,
+  traces: [
+    {
+      type: 'ribbon',
+      fill: 'green',
+    },
+  ],
+};
+
 var plot = createPlotlyPlot('test_plotly', specs);
 var animation = createAnimatedPlot(plot, 1000)
 
