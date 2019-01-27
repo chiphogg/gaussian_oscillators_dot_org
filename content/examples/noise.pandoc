@@ -126,11 +126,7 @@ function createCompactSupportOscillators(n, n_t) {
 
   function setNoise()
   {
-    var noise_row = jStat(L_t[i]).multiply(random_matrix)[0];
-    for (var j = 0; j < n; ++j)
-    {
-      noise[j] = noise_row[j];
-    }
+    Object.assign(noise, jStat(L_t[i]).multiply(random_matrix)[0]);
   }
   setNoise();
 
