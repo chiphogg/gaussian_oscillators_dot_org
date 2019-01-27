@@ -147,6 +147,45 @@ function createHardcodedPlotSpecs(dataset)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Gaussian oscillator code
+
+function createCompactSupportOscillators(n, n_t) {
+  // A matrix of independent normal samples with n_t rows.
+  // At every stage, we will replace the oldest row with brand new samples.
+  var random_matrix = jStat.create(n_t, n, () => jStat.normal.sample(0, 1));
+  // A matrix where each row is equivalent to the previous, but shifted by one.
+  var L_t = LoopingCholesky(CompactSupportCovarianceMatrix(n_t));
+  // The row of L_t which holds the vector to use.
+  var i = 0;
+
+  var noise = [];
+
+  function setNoise()
+  {
+    var noise_row = jStat(L_t[i]).multiply(random_matrix)[0];
+    for (var j = 0; j < n; ++j)
+    {
+      noise[j] = noise_row[j];
+    }
+  }
+  setNoise();
+
+  function advance()
+  {
+    i = (i + 1) % n_t;
+    if (i == 0)
+    {
+    }
+    setNoise();
+  }
+
+  return {
+    data: { noise: noise, },
+    advance: advance,
+  };
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Animation code
 
 function createAnimatedPlot(plot, frame_duration) {
