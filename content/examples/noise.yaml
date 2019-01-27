@@ -2,6 +2,7 @@
 title: "Example: exploring the effect of noise"
 js:
   - jstat 
+  - dataset
   - linear_algebra
   - covariance
   - animation
