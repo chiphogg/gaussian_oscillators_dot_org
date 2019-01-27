@@ -52,6 +52,16 @@ function staticDataset(data)
   };
 }
 
+function combine(datasets)
+{
+  var combined_dataset = datasets.reduce((result, d) => Object.assign(result, d.data), {});
+
+  return {
+    data: combined_dataset,
+    advance: () => datasets.forEach(d => d.advance()),
+  };
+}
+
 function augment(dataset, augmentations)
 {
   // Make a shallow copy of the references: we want to stay up to date on
