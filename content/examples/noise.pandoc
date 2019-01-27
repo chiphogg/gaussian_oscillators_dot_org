@@ -41,6 +41,35 @@ function createHardcodedTestDataset()
   };
 }
 
+function gpAugmentation(k_func, label)
+{
+  var sqrt_matrix;
+
+  function update_derived_data(data)
+  {
+    if (!data[label])
+    {
+      data[label] = [];
+    }
+
+    _update_sqrt_matrix(data);
+    Object.assign(
+      data[label], 
+      jStat(data.noise).multiply(sqrt_matrix)[0]);
+  }
+
+  function _update_sqrt_matrix(data)
+  {
+    // If it exists, we assume it's up to date for performance reasons.
+    if (!!sqrt_matrix) { return; }
+
+    sqrt_matrix = SymmetricSquareRoot(CovarianceMatrix(data.x, k_func));
+  }
+
+  return {
+    update_derived_data: update_derived_data,
+  };
+}
 
 function createHardcodedPlotSpecs(dataset)
 {
