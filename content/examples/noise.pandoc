@@ -10,6 +10,8 @@ We still see many possible versions of the data, but now we also see something n
 
 <div id='test_plotly' style='width:640px;height:480px;'></div>
 
+<div id='test_noise' style='width:640px;height:480px;'></div>
+
 <script type='text/javascript'>
 function createHardcodedTestDataset()
 {
@@ -342,6 +344,12 @@ function createPlotlyPlot(div_id, specs)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Defining the figure
 
+var num_pts = 60;
+var noisy_dataset = combine([
+  createCompactSupportOscillators(num_pts, 40),
+  staticDataset({x: xRange(0, 4, num_pts)}),
+]);
+
 var dataset = augment(
   createHardcodedTestDataset(),
   mapAugmentations({
@@ -360,5 +368,15 @@ var specs = {
 
 var plot = createPlotlyPlot('test_plotly', specs);
 var animation = createAnimatedPlot(plot, 1000)
+
+var new_specs = {
+  data: noisy_dataset,
+  traces: [
+    { type: 'line', aes: { y: 'noise', } },
+  ],
+};
+
+var plot = createPlotlyPlot('test_noise', new_specs);
+var animation = createAnimatedPlot(plot, 250)
 
 </script>
