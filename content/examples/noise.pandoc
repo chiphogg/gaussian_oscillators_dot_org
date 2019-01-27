@@ -44,6 +44,14 @@ function xRange(first, last, num_pts)
   return Array.from({length: num_pts}, (_, i) => first + (last - first) * i / (num_pts - 1));
 }
 
+function staticDataset(data)
+{
+  return {
+    data: Object.assign({}, data),
+    advance: () => {},
+  };
+}
+
 function augment(dataset, augmentations)
 {
   // Make a shallow copy of the references: we want to stay up to date on
