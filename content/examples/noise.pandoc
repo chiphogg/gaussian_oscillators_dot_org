@@ -62,48 +62,54 @@ function combine(datasets)
   };
 }
 
-function augment(dataset, augmentations)
+function augment(dataset, augmentation)
 {
   // Make a shallow copy of the references: we want to stay up to date on
   // changes in the data, but we don't want to change the entries in the
   // "parent" dataset.
   var data = Object.assign({}, dataset.data)
+  augmentation.update_derived_data(data)
 
-  function _shortest_length(keys)
+  function advance()
+  {
+    dataset.advance();
+
+    augmentation.update_derived_data(data)
+  }
+
+  return {
+    data: data,
+    advance: advance,
+  };
+}
+
+function mapAugmentations(augmentations)
+{
+  function _shortest_length(keys, data)
   {
     return Math.min(...keys.map(k => data[k].length));
   }
 
-  function _apply_augmentation(label, aug)
+  function _apply_augmentation(label, aug, data)
   {
     if (!data[label])
     {
       data[label] = [];
     }
 
-    for (var i = 0, i_stop = _shortest_length(aug.vars); i < i_stop; ++i)
+    for (var i = 0, i_stop = _shortest_length(aug.vars, data); i < i_stop; ++i)
     {
       data[label][i] = aug.xform(aug.vars.map(k => data[k][i]))
     }
   }
 
-  function _update_derived_data()
+  function update_derived_data(data)
   {
-    Object.entries(augmentations).forEach(([label, aug]) => _apply_augmentation(label, aug));
+    Object.entries(augmentations).forEach(([label, aug]) => _apply_augmentation(label, aug, data));
   }
-
-  function advance()
-  {
-    dataset.advance();
-
-    _update_derived_data()
-  }
-
-  _update_derived_data()
 
   return {
-    data: data,
-    advance: advance,
+    update_derived_data: update_derived_data,
   };
 }
 
@@ -338,10 +344,10 @@ function createPlotlyPlot(div_id, specs)
 
 var dataset = augment(
   createHardcodedTestDataset(),
-  {
+  mapAugmentations({
     ymin: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y - error_y},
     ymax: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y + error_y},
-  });
+  }));
 
 var specs = {
   data: dataset,
