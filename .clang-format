@@ -1,0 +1,8 @@
+---
+Language: JavaScript
+ColumnLimit: 80
+BreakBeforeBraces: Allman
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+---
