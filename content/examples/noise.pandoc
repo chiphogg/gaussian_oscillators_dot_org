@@ -263,9 +263,32 @@ function createPlotlyTraces(specs)
   return plotly_specs.reduce((result, val) => result.concat(val), []);;
 }
 
+function getOrUndef(o, key, ...keys)
+{
+  if (!o[key])
+  {
+    return undefined;
+  }
+  if (!keys.length)
+  {
+    return o[key];
+  }
+  return getOrUndef(o[key], ...keys);
+}
+
+function createPlotlyLayout(specs)
+{
+  return {
+    yaxis: {
+      range: getOrUndef(specs, 'config', 'range', 'y')
+    },
+  };
+}
+
 function createPlotlyPlot(div_id, specs)
 {
   var traces = createPlotlyTraces(specs);
+  var layout = createPlotlyLayout(specs);
 
   function animateToNextFrame(duration)
   {
@@ -286,7 +309,7 @@ function createPlotlyPlot(div_id, specs)
       });
   }
 
-  Plotly.react(div_id, traces);
+  Plotly.react(div_id, traces, layout);
 
   return {
     animateToNextFrame: animateToNextFrame,
