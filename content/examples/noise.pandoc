@@ -351,17 +351,51 @@ function createPlotlyPlot(div_id, specs)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Defining the figure
 
-var num_pts = 60;
+var true_function = getExampleFunction();
+var num_pts = true_function.x.length;
 var noisy_dataset = combine([
   createCompactSupportOscillators(num_pts, 40),
-  staticDataset({x: xRange(0, 4, num_pts)}),
+  staticDataset(true_function),
 ]);
+noisy_dataset = augment(
+  noisy_dataset,
+  mapAugmentations({
+    noisy_data: { vars: ['y', 'noise'], xform: ([y, noise]) => y + noise, },
+  }));
+noisy_dataset = augment(
+  noisy_dataset,
+  gpRegressionAugmentation(Matern5v2(1, 1), 1, 'noisy_data', 'fit'));
+noisy_dataset = augment(
+  noisy_dataset,
+  mapAugmentations({
+    fit_ymax1: { vars: ['fit', 'fit_sd'], xform: ([y, dy]) => y + dy, },
+    fit_ymin1: { vars: ['fit', 'fit_sd'], xform: ([y, dy]) => y - dy, },
+    fit_ymax2: { vars: ['fit', 'fit_sd'], xform: ([y, dy]) => y + 2 * dy, },
+    fit_ymin2: { vars: ['fit', 'fit_sd'], xform: ([y, dy]) => y - 2 * dy, },
+  }));
+noisy_dataset = augment(
+  noisy_dataset,
+  gpAugmentation(Matern5v2(1, 1), 'matern5v2'));
+noisy_dataset = augment(
+  noisy_dataset,
+  gpAugmentation(Matern3v2(1, 1), 'matern3v2'));
+noisy_dataset = augment(
+  noisy_dataset,
+  gpAugmentation(SquaredExponential(1, 1), 'squared_exp'));
+noisy_dataset = augment(
+  noisy_dataset,
+  gpAugmentation(Exponential(1, 1), 'exp'));
 
 var new_specs = {
   data: noisy_dataset,
   traces: [
-    { type: 'line', aes: { y: 'noise', } },
+    { type: 'line', aes: { y: 'noisy_data', }, line: { color: '#bbb', }, },
+    { type: 'line', aes: { y: 'y', }, line: { color: 'black', }, },
+    { type: 'ribbon', aes: { ymin: 'fit_ymin1',  ymax: 'fit_ymax1', }, fill: '#4b48'},
+    { type: 'ribbon', aes: { ymin: 'fit_ymax1',  ymax: 'fit_ymax2', }, fill: '#bb48'},
+    { type: 'ribbon', aes: { ymin: 'fit_ymin2',  ymax: 'fit_ymin1', }, fill: '#bb48'},
   ],
+  config: { range: { y: [-4, 3], }, },
 };
 
 var plot = createPlotlyPlot('test_noise', new_specs);
