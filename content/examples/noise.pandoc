@@ -157,10 +157,9 @@ function createCompactSupportOscillators(n, n_t) {
 
   function advance()
   {
+    row = random_matrix[i];
+    row.forEach((old_val, j, a) => a[j] = jStat.normal.sample(0, 1), row);
     i = (i + 1) % n_t;
-    if (i == 0)
-    {
-    }
     setNoise();
   }
 
