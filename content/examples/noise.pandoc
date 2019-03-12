@@ -90,6 +90,50 @@ function addMatrices(a, b)
   });
 }
 
+function gpRegressionAugmentation(k_func, sigma_n_sq, label_in, label_out)
+{
+  var mean_matrix;
+  var cov_matrix;
+
+  function update_derived_data(data)
+  {
+    if (!data[label_out])
+    {
+      data[label_out] = [];
+    }
+
+    label_sd = label_out + '_sd'
+    if (!data[label_sd])
+    {
+      data[label_sd] = [];
+    }
+
+    _update_matrix(data);
+    Object.assign(
+      data[label_out], 
+      jStat.multiply(jStat(data[label_in]), jStat.transpose(mean_matrix))[0]);
+    Object.assign(
+      data[label_sd], 
+      jStat.transpose(jStat.diag(cov_matrix)).map(v => Math.sqrt(v)));
+  }
+
+  function _update_matrix(data)
+  {
+    // If it exists, we assume it's up to date for performance reasons.
+    if (!!mean_matrix) { return; }
+
+    var n = data[label_in].length;
+    var noise_matrix = jStat.multiply(jStat.identity(n), sigma_n_sq);
+    var k_matrix = CovarianceMatrix(data.x, k_func);
+
+    mean_matrix = jStat.multiply(k_matrix, jStat.inv(addMatrices(k_matrix, noise_matrix)));
+    cov_matrix = addMatrices(k_matrix, jStat.multiply(jStat.multiply(mean_matrix, k_matrix), -1));
+  }
+
+  return {
+    update_derived_data: update_derived_data,
+  };
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gaussian oscillator code
