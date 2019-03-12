@@ -302,7 +302,9 @@ function createPlotlyPlot(div_id, specs)
     animateToNextFrame: animateToNextFrame,
   };
 }
+</script>
 
+<script type='text/javascript'>
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Defining the figure
 
