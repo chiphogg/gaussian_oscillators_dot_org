@@ -176,11 +176,17 @@ function createAnimatedPlot(plot, frame_duration) {
     animation_id = requestAnimationFrame(timestamp => _update(timestamp, next_timestamp));
   }
 
+  function toggle()
+  {
+    if (!!animation_id) { stop(); } else { start(); }
+  }
+
   start();
 
   return {
     start: start,
     stop: stop,
+    toggle: toggle,
   };
 }
 
@@ -354,4 +360,19 @@ var new_specs = {
 var plot = createPlotlyPlot('test_noise', new_specs);
 var animation = createAnimatedPlot(plot, 250)
 
+</script>
+
+<script type='text/javascript'>
+handleKeyPress = function(e) {
+  e = e || window.event;
+  switch (String.fromCharCode(e.keyCode)) {
+    case 'p':
+      animation.toggle();
+      break;
+    default:
+      return;
+  }
+}
+
+document.addEventListener("keypress", handleKeyPress, false);
 </script>
