@@ -42,6 +42,14 @@ function gpAugmentation(k_func, label)
   };
 }
 
+// Add two matrices.
+function addMatrices(a, b)
+{
+  return a.map(function(a_i, i) {
+    return a_i.map(function(a_ij, j) { return a_ij + b[i][j]; });
+  });
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gaussian oscillator code
