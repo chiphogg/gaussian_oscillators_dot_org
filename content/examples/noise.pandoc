@@ -8,38 +8,9 @@ If we repeat this exercise many times, it conveys an idea of the reliability of 
 Animations take this one step further, because they let us change the noise smoothly and continuously.
 We still see many possible versions of the data, but now we also see something new: we can watch the fit evolve in response to the evolution of the noise.
 
-<div id='test_plotly' style='width:640px;height:480px;'></div>
-
 <div id='test_noise' style='width:640px;height:480px;'></div>
 
 <script type='text/javascript'>
-function createHardcodedTestDataset()
-{
-  var x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-  var y = [0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5, 0, -1.5, -2, -1.5, 0, 1.5, 2, 1.5];
-  var error_y = [0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
-  var y1 = [0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6, 0, -0.6, -0.8, -0.6, 0, 0.6, 0.8, 0.6];
-
-  function advance()
-  {
-    for (var i = 0, i_stop = y.length; i < i_stop; ++i)
-    {
-      y[i] *= -0.8;
-      y1[i] *= 0.9;
-      y1[i] += 0.1;
-    }
-  }
-
-  return {
-    data: {
-      x: x,
-      y: y,
-      error_y: error_y,
-      y1: y1,
-    },
-    advance: advance,
-  };
-}
 
 function gpAugmentation(k_func, label)
 {
@@ -71,44 +42,6 @@ function gpAugmentation(k_func, label)
   };
 }
 
-function createHardcodedPlotSpecs(dataset)
-{
-  var traces = [
-    {
-      type: 'scatter',
-      x: dataset.data.x,
-      y: dataset.data.y,
-      error_y: {
-        type: 'data',
-        array: dataset.data.error_y,
-      },
-      line: { simplify: false, },
-    },{
-      type: 'scatter',
-      x: dataset.data.x,
-      y: dataset.data.y1,
-      fill: 'tonexty',
-      mode: 'markers',
-      line: { simplify: false, },
-    },{
-      type: 'scatter',
-      x: dataset.data.x,
-      y: dataset.data.ymin,
-      showlegend: false,
-      line: { width: 0.5, color: 'gray', simplify: false, },
-    },{
-      type: 'scatter',
-      x: dataset.data.x,
-      y: dataset.data.ymax,
-      fill: 'tonexty',
-      line: { width: 0.5, color: 'gray', simplify: false, },
-    }];
-
-  return {
-    traces: traces,
-    advance_data: dataset.advance,
-  }; 
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gaussian oscillator code
@@ -330,25 +263,6 @@ var noisy_dataset = combine([
   createCompactSupportOscillators(num_pts, 40),
   staticDataset({x: xRange(0, 4, num_pts)}),
 ]);
-
-var dataset = augment(
-  createHardcodedTestDataset(),
-  mapAugmentations({
-    ymin: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y - error_y},
-    ymax: {vars: ['y', 'error_y'], xform: ([y, error_y]) => y + error_y},
-  }));
-
-var specs = {
-  data: dataset,
-  traces: [
-    { type: 'line', aes: { y: 'error_y', } },
-    { type: 'ribbon', },
-    { type: 'point', aes: { y: 'ymin', } },
-  ],
-};
-
-var plot = createPlotlyPlot('test_plotly', specs);
-var animation = createAnimatedPlot(plot, 1000)
 
 var new_specs = {
   data: noisy_dataset,
